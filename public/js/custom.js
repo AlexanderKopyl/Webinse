@@ -30,15 +30,15 @@ function makeTdEditable(td) {
 
     td.classList.add('edit-td'); // td в состоянии редактирования, CSS применятся к textarea внутри ячейки
 
-    let textArea = document.createElement('textarea');
-    textArea.style.width = td.clientWidth + 'px';
-    textArea.style.height = td.clientHeight + 'px';
-    textArea.className = 'edit-area';
+    let input = document.createElement('input');
+    input.style.width = td.clientWidth + 'px';
+    input.style.height = td.clientHeight - 22 + 'px';
+    input.className = 'edit-area';
 
-    textArea.value = td.innerHTML;
+    input.value = td.innerHTML;
     td.innerHTML = '';
-    td.appendChild(textArea);
-    textArea.focus();
+    td.appendChild(input);
+    input.focus();
 
     td.insertAdjacentHTML("beforeEnd",
         '<div class="edit-controls"><button class="edit-ok">OK</button><button class="edit-cancel">CANCEL</button></div>'
