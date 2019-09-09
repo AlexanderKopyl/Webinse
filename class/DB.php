@@ -4,6 +4,9 @@
 namespace classDB\db;
 
 
+use PDO;
+use PDOException;
+
 Class DB {
     // Database Connection Configuration Parameters
     // array('driver' => 'mysql','host' => '','dbname' => '','username' => '','password' => '')
@@ -63,6 +66,24 @@ Class DB {
     public function getQuery( $sql ) {
         $stmt = $this->dbc->query( $sql );
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
         return $stmt;
+    }
+
+    public function getResult($sql){
+        $sth = $this->dbc->prepare($sql);
+        $sth->execute();
+
+        /* Извлечение всех оставшихся строк результирующего набора */
+        $result = $sth->fetchAll();
+
+        return $result;
+    }
+
+    public function update($sql){
+        $sth = $this->dbc->prepare($sql);
+        $sth->execute();
+
+        return $sth->execute();
     }
 }
