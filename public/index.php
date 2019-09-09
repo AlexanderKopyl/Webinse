@@ -1,4 +1,7 @@
 <?php
+require '../vendor/autoload.php';
+$db = require_once '../config/dbconnect.php';
+$lang = require_once '../config/language.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -16,10 +19,10 @@
     <thead>
     <tr>
         <th scope="col">#</th>
-        <th scope="col">First Name</th>
-        <th scope="col">Second Name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Event</th>
+        <th scope="col"><? echo $lang['first_name']?></th>
+        <th scope="col"><? echo $lang['second_name']?></th>
+        <th scope="col"><? echo $lang['email']?></th>
+        <th scope="col"><? echo $lang['buttons']?></th>
     </tr>
     </thead>
     <tbody>
