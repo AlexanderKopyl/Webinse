@@ -52,7 +52,10 @@ Class DB {
      */
     public function runQuery( $sql ) {
         try {
-            $count = $this->dbc->exec($sql) or print_r($this->dbc->errorInfo());
+            $count = $this->dbc->exec($sql);
+            if($count){
+                return $this->dbc->errorInfo();
+            }
         } catch(PDOException $e) {
             echo __LINE__.$e->getMessage();
         }
@@ -71,11 +74,19 @@ Class DB {
     }
 
     public function getResult($sql){
-        $sth = $this->dbc->prepare($sql);
-        $sth->execute();
+        try{
+            $sth = $this->dbc->prepare($sql);
 
-        /* Извлечение всех оставшихся строк результирующего набора */
-        $result = $sth->fetchAll();
+            $sth->execute();
+
+            /* Извлечение всех оставшихся строк результирующего набора */
+            $result = $sth->fetchAll();
+        }catch (PDOException $e){
+            print_r($e->getMessage());
+
+            return false;
+        }
+
 
         return $result;
     }
@@ -86,4 +97,12 @@ Class DB {
 
         return $sth->execute();
     }
+
+    public function delete($sql){
+        $sth = $this->dbc->prepare($sql);
+        $sth->execute();
+
+        return $sth->execute();
+    }
+
 }
