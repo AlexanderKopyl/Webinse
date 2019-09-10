@@ -82,9 +82,7 @@ Class DB {
             /* Извлечение всех оставшихся строк результирующего набора */
             $result = $sth->fetchAll();
         }catch (PDOException $e){
-            print_r($e->getMessage());
-
-            return false;
+            return ['error' => $e->getMessage()];
         }
 
 
