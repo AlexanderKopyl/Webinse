@@ -66,20 +66,26 @@ $lang = require_once '../config/language.php';
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($users as $user) : ?>
-    <tr data-id="<?php echo $user['id']?>">
-        <th scope="row"><?php echo $user['id']?></th>
-        <td data-info="first_name" data-id="<?php echo $user['id']?>"><?php echo $user['first_name']?></td>
-        <td data-info="second_name" data-id="<?php echo $user['id']?>"><?php echo $user['second_name']?></td>
-        <td data-info="email" data-id="<?php echo $user['id']?>"><?php echo $user['email']?></td>
-        <td class="btn-box">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-danger deleteUser" data-id="<?php echo $user['id']?>">Delete</button>
-            </div>
+    <?php if(isset($users) && count($users) > 0):?>
+        <?php foreach ($users as $user) : ?>
+            <?php if(isset($user) && $user):?>
+            <tr data-id="<?php echo $user['id']?>">
+                <th scope="row"><?php echo $user['id']?></th>
+                <td data-info="first_name" data-id="<?php echo $user['id']?>"><?php echo $user['first_name']?></td>
+                <td data-info="second_name" data-id="<?php echo $user['id']?>"><?php echo $user['second_name']?></td>
+                <td data-info="email" data-id="<?php echo $user['id']?>"><?php echo $user['email']?></td>
+                <td class="btn-box">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-danger" onclick="buttonDeleteUser(this)" data-id="<?php echo $user['id']?>">Delete</button>
+                    </div>
 
-        </td>
-    </tr>
-    <?php endforeach;?>
+                </td>
+            </tr>
+            <?php endif;?>
+        <?php endforeach;?>
+    <?php else:?>
+        <td colspan="5" class="empty">Пока нету пользователей</td>
+    <?php endif;?>
     </tbody>
 </table>
 </div>

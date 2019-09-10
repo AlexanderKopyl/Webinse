@@ -72,15 +72,21 @@ addUser.onclick = function (event) {
 
         },
         success: function (e) {
+            let tableEmpty = $('#main-table td').hasClass( "empty" );
+
+            if(tableEmpty){
+                $('#main-table td').remove();
+            }
+
             let answer = JSON.parse(e);
             $("#addUserModal").modal('hide');
-            // console.log(answer[0].id);
+            console.log(answer[0].id);
             if(answer.success !== false){
                 $('#main-table tbody').append('<tr data-id="' + answer[0].id + '"> <th scope="row">' + answer[0].id + '</th> <td data-info="first_name" data-id="' + answer[0].id + '">' + first_name + '</td> <td data-info="second_name" data-id="' + e + '">' + second_name + '</td>'
                     + '<td data-info="email" data-id="' + answer[0].id + '">' + email + '</td>' +
                     '<td class="btn-box">' +
                     '<div class="btn-group" role="group" aria-label="Basic example">' +
-                    ' <button type="button" class="btn btn-danger deleteUser">Delete</button>' +
+                    ' <button type="button" class="btn btn-danger deleteUser" onclick="buttonDeleteUser(this)">Delete</button>' +
                     '</div>' +
                     '</td>' +
                     '</tr>');
@@ -91,8 +97,12 @@ addUser.onclick = function (event) {
         }
     });
 };
-$(".deleteUser").on('click', function (event) {
-    let id = event.target.dataset.id;
+
+// $(".deleteUser").on('click', deleteUser(event));
+function buttonDeleteUser(target) {
+    let tableBody = $('#main-table tbody');
+    let id = target.dataset.id;
+    // console.log(target.dataset.id);
     let areYouSure = confirm("Вы - уверены?");
     if (areYouSure) {
         $.ajax({
@@ -107,12 +117,18 @@ $(".deleteUser").on('click', function (event) {
 
             },
             success: function (e) {
-                $("tr[data-id=" + id + "]").remove()
+
+                $("tr[data-id=" + id + "]").remove();
+
+                let tabletd = $('#main-table td').length;
+
+                if(tabletd === 0){
+                    $('#main-table tbody').html('<td class="empty" colspan="5">Пока нету пользователей</td>')
+                }
             }
         });
     }
-});
-
+}
 
 function makeTdEditable(td) {
     editingTd = {
