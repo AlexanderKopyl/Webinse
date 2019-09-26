@@ -63,6 +63,7 @@ $lang = require_once '../config/language.php';
             Add User
         </button>
     </div>
+    <span class="answer-from-db"></span>
     <table class="table table-bordered table-hover" id="main-table">
         <thead>
         <tr>

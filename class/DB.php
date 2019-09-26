@@ -17,7 +17,7 @@ Class DB {
      * Opens the database connection
      * @param $config is an array of database connection parameters
      */
-    public function __construct( array $config ) {
+    public function __construct($config) {
         $this->_config = $config;
         $this->getPDOConnection();
     }
@@ -50,9 +50,10 @@ Class DB {
      * @param string sql insert update or delete statement
      * @return int count of records affected by running the sql statement.
      */
-    public function runQuery( $sql ) {
+    public function runQuery( $sql,$params = [] ) {
         try {
-            $count = $this->dbc->exec($sql);
+            $sth = $this->dbc->prepare($sql);
+            $count = $sth->execute($params);
             if($count){
                 return $this->dbc->errorInfo();
             }
@@ -66,8 +67,10 @@ Class DB {
      * @param string sql insert update or delete statement
      * @returns associative array
      */
-    public function getQuery( $sql ) {
-        $stmt = $this->dbc->query( $sql );
+    public function getQuery( $sql ,$params = []) {
+        $stmt = $this->dbc->prepare($sql);
+        $stmt->execute($params);
+
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         return $stmt;
@@ -76,7 +79,6 @@ Class DB {
     public function getResult($sql){
         try{
             $sth = $this->dbc->prepare($sql);
-
             $sth->execute();
 
             /* Извлечение всех оставшихся строк результирующего набора */
@@ -89,16 +91,21 @@ Class DB {
         return $result;
     }
 
+//    public function update($sql,$params = []){
+//        $sth = $this->dbc->prepare($sql);
+//        $sth->execute($params);
+//        return $params;
+//    }
     public function update($sql){
         $sth = $this->dbc->prepare($sql);
         $sth->execute();
-
         return $sth->execute();
+//        return $sth->execute();
     }
 
-    public function delete($sql){
+    public function delete($sql,$params = []){
         $sth = $this->dbc->prepare($sql);
-        $sth->execute();
+        $sth->execute($params);
 
         return $sth->execute();
     }

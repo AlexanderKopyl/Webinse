@@ -11,3 +11,14 @@ span.db-request {
     text-align: center;
     display: block;
 }
+td.red-zone {
+    border: 2px solid red;
+}
+span.answer-from-db {
+    display: block;
+    padding: 10px;
+    color: green;
+}
+span.answer-from-error {
+    color: red;
+}

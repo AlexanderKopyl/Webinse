@@ -1,7 +1,9 @@
 <?php
 require "../config/dbconnect.php";
+
 $mail = isset($_POST['email']) ? htmlspecialchars(strip_tags($_POST['email'])) : '';
-$sql = "INSERT INTO `user`(`first_name`, `second_name`, `email`) VALUES ('{$_POST['first_name']}','{$_POST['second_name']}','{$mail}')";
+//$sql = "INSERT INTO `user`(`first_name`, `second_name`, `email`) VALUES ('{$_POST['first_name']}','{$_POST['second_name']}','{$mail}')";
+$sql = "INSERT INTO `user`(`first_name`, `second_name`, `email`) VALUES (?,?,?)";
 $lasId = "SELECT MAX( id )  as id FROM `user`";
 $json = array();
 if (isset($_POST['first_name'])) {
@@ -17,8 +19,9 @@ if (isset($_POST['second_name'])) {
 if ((mb_strlen($mail) > 96) || !preg_match('/^[^\@]+@.*.[a-z]{2,15}$/i', $mail)) {
     $json['error']['email'] = "Некоректнный ввод Емейла";
 }
+
 if (!$json) {
-    $count = $db->runQuery($sql);
+    $count = $db->runQuery($sql,array($_POST['first_name'],$_POST['second_name'],$mail));
     $id = $db->getResult($lasId);
     if (!$count) {
         $json['fail'] = "Такой пользователь уже существует";

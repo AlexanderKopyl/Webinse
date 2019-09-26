@@ -104,7 +104,6 @@ function buttonDeleteUser(target) {
 
             },
             success: function (e) {
-                console.log(e);
                 $("tr[data-id=" + id + "]").remove();
 
                 let tabletd = $('#main-table td').length;
@@ -133,7 +132,7 @@ function makeTdEditable(td) {
     input.setAttribute('name', td.dataset.info);
 
 
-    input.value = td.innerHTML;
+    input.value = td.innerHTML.replace(/\s/g, "");
     td.innerHTML = '';
     td.appendChild(input);
     input.focus();
@@ -144,53 +143,61 @@ function makeTdEditable(td) {
 }
 
 function finishTdEdit(td, isOk) {
-    let value = td.firstChild.value;
+    let value = td.firstChild.value.replace(/\s/g, '');
     let element = document.getElementsByClassName('edit-area');
     let attrName = element[0].getAttribute("name");
-    let RegEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
-    let RegName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-    if (isOk) {
-
-        if (value === '') {
-            element[0].style.border = '2px solid red';
-            alert('Заполните Поле: ' + td.dataset.info);
-            return false;
-        }
-
-        if (attrName === 'first_name' || attrName === 'second_name') {
-            if (!value.match(RegName)) {
-                alert('Введите коректно Поле: ' + td.dataset.info);
-                element[0].style.border = '2px solid red';
-                return false
-            }
-        }
-
-        if (attrName === 'email') {
-            if (!value.match(RegEmail)) {
-                alert('Введите коректно Поле: ' + td.dataset.info);
-                element[0].style.border = '2px solid red';
-                return false
-            }
-        }
-
+    if (isOk && validate(element,attrName,value,td)) {
         $.ajax({
             type: "POST",
-            data: {value: value, table: td.dataset.info, id: td.dataset.id},
+            data: {value: value, table: td.dataset.info, id: td.dataset.id,attrName:attrName},
             url: "../changeInfo.php",
             error: function () {
                 alert('Error')
             },
             success: function (e) {
-                console.log('Work Fine');
+                let data = JSON.parse(e);
+                console.log(data);
+
+                if(!data.error){
+                    $('[data-info="'+ attrName +'"][data-id="'+td.dataset.id+'"]').removeClass("red-zone");
+                    $('.answer-from-db').html(data.success).removeClass('answer-from-error');
+                }
             }
         });
         td.innerHTML = td.firstChild.value;
-
-
     } else {
         td.innerHTML = editingTd.data;
+        $('[data-info="'+ attrName +'"][data-id="'+td.dataset.id+'"]').addClass("red-zone");
     }
     td.classList.remove('edit-td');
     editingTd = null;
+}
+function validate(element,attrName,value,td) {
+    let RegEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
+    let RegName = /^[a-zA-Zа-яА-Я']{2}[a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
+
+    if (value === '') {
+        element[0].style.border = '2px solid red';
+        $('.answer-from-db').html('Заполните Поле: ' + td.dataset.info).addClass("answer-from-error");
+        return false;
+    }
+
+    if (attrName === 'first_name' || attrName === 'second_name') {
+        if (!value.match(RegName)) {
+            $('.answer-from-db').html('Введите коректно Поле: ' + td.dataset.info).addClass("answer-from-error");
+            element[0].style.border = '2px solid red';
+            return false
+        }
+    }
+
+    if (attrName === 'email') {
+        if (!value.match(RegEmail)) {
+            $('.answer-from-db').html('Введите коректно Поле: ' + td.dataset.info).addClass("answer-from-error");
+            element[0].style.border = '2px solid red';
+            return false
+        }
+    }
+
+    return true;
 }
 
