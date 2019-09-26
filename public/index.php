@@ -54,65 +54,78 @@ $lang = require_once '../config/language.php';
         </div>
     </div>
 </div>
-
+<header>
+    <nav class="navbar navbar-dark bg-dark" >
+        <div class="container"> <a class="navbar-brand" href="#">
+                <i class="fa d-inline fa-lg fa-circle"></i>
+                <b> BRAND</b>
+            </a> </div>
+    </nav>
+</header>
 <div class="container">
-    <div class="button-modal">
-        <!-- Button trigger modal -->
-<!--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">-->
-        <button type="button" class="btn btn-primary" onclick="open_add()">
-            Add User
-        </button>
-    </div>
-    <span class="answer-from-db"></span>
-    <table class="table table-bordered table-hover" id="main-table">
-        <thead>
-        <tr>
-            <th scope="col">#id</th>
-            <th scope="col">
-                <? echo $lang['first_name']?>
-            </th>
-            <th scope="col">
-                <? echo $lang['second_name']?>
-            </th>
-            <th scope="col">
-                <? echo $lang['email']?>
-            </th>
-            <th scope="col">
-                <? echo $lang['buttons']?>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php if(isset($users) && count($users) > 0):?>
-            <?php foreach ($users as $user) : ?>
-                <?php if(isset($user) && $user):?>
-                    <tr data-id="<?php echo $user['id']?>">
-                        <th scope="row">
-                            <?php echo $user['id']?>
-                        </th>
-                        <td data-info="first_name" data-id="<?php echo $user['id']?>">
-                            <?php echo $user['first_name']?>
-                        </td>
-                        <td data-info="second_name" data-id="<?php echo $user['id']?>">
-                            <?php echo $user['second_name']?>
-                        </td>
-                        <td data-info="email" data-id="<?php echo $user['id']?>">
-                            <?php echo $user['email']?>
-                        </td>
-                        <td class="btn-box">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-danger" onclick="buttonDeleteUser(this)" data-id="<?php echo $user['id']?>">Delete</button>
-                            </div>
+    <div class="row" >
+        <div class="col-md-10">
+            <span class="answer-from-db"></span>
+            <table class="table table-bordered table-hover" id="main-table">
+                <thead>
+                <tr>
+                    <th scope="col">#id</th>
+                    <th scope="col">
+                        <? echo $lang['first_name']?>
+                    </th>
+                    <th scope="col">
+                        <? echo $lang['second_name']?>
+                    </th>
+                    <th scope="col">
+                        <? echo $lang['email']?>
+                    </th>
+                    <th scope="col">
+                        <? echo $lang['buttons']?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if(isset($users) && count($users) > 0):?>
+                    <?php foreach ($users as $user) : ?>
+                        <?php if(isset($user) && $user):?>
+                            <tr data-id="<?php echo $user['id']?>">
+                                <th scope="row">
+                                    <?php echo $user['id']?>
+                                </th>
+                                <td data-info="first_name" data-id="<?php echo $user['id']?>">
+                                    <?php echo $user['first_name']?>
+                                </td>
+                                <td data-info="second_name" data-id="<?php echo $user['id']?>">
+                                    <?php echo $user['second_name']?>
+                                </td>
+                                <td data-info="email" data-id="<?php echo $user['id']?>">
+                                    <?php echo $user['email']?>
+                                </td>
+                                <td class="btn-box">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-danger" onclick="buttonDeleteUser(this)" data-id="<?php echo $user['id']?>">Delete</button>
+                                    </div>
 
-                        </td>
-                    </tr>
+                                </td>
+                            </tr>
+                        <?php endif;?>
+                    <?php endforeach;?>
+                <?php else:?>
+                    <td colspan="5" class="empty">Пока нету пользователей</td>
                 <?php endif;?>
-            <?php endforeach;?>
-        <?php else:?>
-            <td colspan="5" class="empty">Пока нету пользователей</td>
-        <?php endif;?>
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2">
+            <div class="button-modal">
+                <!-- Button trigger modal -->
+                <!--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">-->
+                <button type="button" class="btn btn-primary" onclick="open_add()">
+                    Add User
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="js/jquery-3.4.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>

@@ -1,8 +1,9 @@
 <?php
-
 require "../config/dbconnect.php";
-$sql = "UPDATE `user` SET {$_POST['table']}='{$_POST['value']}' WHERE `id` = {$_POST['id']}";
+
+$sql = "UPDATE `user` SET {$_POST['table']}= ? WHERE `id` = ?";
 $RegName = "/^[a-zA-Zа-яА-Я']{2}[a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u";
+
 $json = array();
 
 if (isset($_POST['value'])) {
@@ -26,7 +27,7 @@ if (isset($_POST['attrName']) && $_POST['attrName'] === 'email'){
 }
 
 if (!$json) {
-    $users = $db->update($sql);
+    $users = $db->update($sql,array($_POST['value'],$_POST['id']));
     if (!$users) {
         $json['fail'] = "Обновить данные не получилось";
     } else {

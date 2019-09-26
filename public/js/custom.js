@@ -54,7 +54,7 @@ addUser.onclick = function (event) {
             let answer = JSON.parse(e);
 
             if(answer.fail){
-                $(".db-request").html(answer.fail);
+                $(".db-request").html(answer.fail).addClass("answer-from-error");
             }
 
             if(answer.error){
@@ -76,7 +76,7 @@ addUser.onclick = function (event) {
                     '</tr>');
             }
             if(answer.success){
-                $(".db-request").html("Добавление прошло успешно");
+                $(".db-request").html("Добавление прошло успешно").removeClass('answer-from-error');
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -132,7 +132,7 @@ function makeTdEditable(td) {
     input.setAttribute('name', td.dataset.info);
 
 
-    input.value = td.innerHTML.replace(/\s/g, "");
+    input.value = td.innerHTML;
     td.innerHTML = '';
     td.appendChild(input);
     input.focus();

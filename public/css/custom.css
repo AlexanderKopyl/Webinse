@@ -1,5 +1,5 @@
 .button-modal {
-    text-align: end;
+    margin-top: 20px;
 }
 span.email_error,.second_name_error,.first_name_error {
     display: block;

@@ -96,9 +96,9 @@ Class DB {
 //        $sth->execute($params);
 //        return $params;
 //    }
-    public function update($sql){
+    public function update($sql,$params = []){
         $sth = $this->dbc->prepare($sql);
-        $sth->execute();
+        $sth->execute($params);
         return $sth->execute();
 //        return $sth->execute();
     }
