@@ -161,6 +161,10 @@ function finishTdEdit(td, isOk) {
                 if(!data.error){
                     $('[data-info="'+ attrName +'"][data-id="'+td.dataset.id+'"]').removeClass("red-zone");
                     $('.answer-from-db').html(data.success).removeClass('answer-from-error');
+
+                }else{
+                    // $('.answer-from-db').html(data.error.exist).addClass("answer-from-error");
+                    window.location = '/';
                 }
             }
         });
