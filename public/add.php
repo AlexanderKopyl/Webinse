@@ -10,6 +10,7 @@ $json = $validator->validationAdd();
 if (!$json) {
     $count = $db->runQuery($sql,array($_POST['first_name'],$_POST['second_name'],$_POST['email']));
     $id = $db->getResult($lasId);
+
     if (!$count) {
         $json['fail'] = "Такой пользователь уже существует";
     } else {
@@ -18,4 +19,3 @@ if (!$json) {
     }
 }
 print_r(json_encode($json));
-//var_dump($users);
