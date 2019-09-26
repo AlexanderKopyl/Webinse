@@ -1,27 +1,14 @@
 <?php
 require "../config/dbconnect.php";
-
-$mail = isset($_POST['email']) ? htmlspecialchars(strip_tags($_POST['email'])) : '';
-//$sql = "INSERT INTO `user`(`first_name`, `second_name`, `email`) VALUES ('{$_POST['first_name']}','{$_POST['second_name']}','{$mail}')";
+require "../class/Validator.php";
+use classDB\db\Validator;
+$validator = new Validator($_POST);
 $sql = "INSERT INTO `user`(`first_name`, `second_name`, `email`) VALUES (?,?,?)";
 $lasId = "SELECT MAX( id )  as id FROM `user`";
-$json = array();
-if (isset($_POST['first_name'])) {
-    if ((mb_strlen($_POST['first_name']) < 3) || (mb_strlen($_POST['first_name']) > 32)) {
-        $json['error']['first_name'] = "Некоректнный ввод имени";
-    }
-}
-if (isset($_POST['second_name'])) {
-    if ((mb_strlen($_POST['second_name']) < 3) || (mb_strlen($_POST['second_name']) > 32)) {
-        $json['error']['second_name'] = "Некоректнный ввод Фамилии";
-    }
-}
-if ((mb_strlen($mail) > 96) || !preg_match('/^[^\@]+@.*.[a-z]{2,15}$/i', $mail)) {
-    $json['error']['email'] = "Некоректнный ввод Емейла";
-}
+$json = $validator->validationAdd();
 
 if (!$json) {
-    $count = $db->runQuery($sql,array($_POST['first_name'],$_POST['second_name'],$mail));
+    $count = $db->runQuery($sql,array($_POST['first_name'],$_POST['second_name'],$_POST['email']));
     $id = $db->getResult($lasId);
     if (!$count) {
         $json['fail'] = "Такой пользователь уже существует";

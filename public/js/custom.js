@@ -132,7 +132,7 @@ function makeTdEditable(td) {
     input.setAttribute('name', td.dataset.info);
 
 
-    input.value = td.innerHTML;
+    input.value = td.innerHTML.replace(/\s/g, '');
     td.innerHTML = '';
     td.appendChild(input);
     input.focus();
