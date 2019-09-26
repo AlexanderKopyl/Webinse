@@ -10,56 +10,28 @@ table.onclick = function (event) {
 
     let target = event.target.closest('.edit-cancel,.edit-ok,td');
 
-    if (!table.contains(target) || target.className == 'btn-box') return;
+    if (!table.contains(target) || target.className === 'btn-box') return;
 
-    if (target.className == 'edit-cancel') {
+    if (target.className === 'edit-cancel') {
         finishTdEdit(editingTd.elem, false);
-    } else if (target.className == 'edit-ok') {
+    } else if (target.className === 'edit-ok') {
         finishTdEdit(editingTd.elem, true);
-    } else if (target.nodeName == 'TD') {
+    } else if (target.nodeName === 'TD') {
         if (editingTd) return; // уже редактируется
 
         makeTdEditable(target);
     }
 
 };
+function open_add(){
+    $('#addUserModal').modal('show');
+    $('.error_span').html('');
+}
 addUser.onclick = function (event) {
-    var form = '#form-add';
-    var first_name = $(form + ' input[name="first_name"]').val();
-    var second_name = $(form + ' input[name="second_name"]').val();
-    var email = $(form + ' input[name="email"]').val();
-
-    let RegEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
-    let RegName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-    // console.log(element[0].getAttribute("name"));
-
-        if (first_name === '' || second_name === '' ||email === ''){
-            alert('Заполните Поле: ' + td.dataset.info);
-            return false;
-        }
-
-        if (first_name){
-            if (!first_name.match(RegName)){
-                alert('Введите коректно Поле: First Name');
-                $(form + ' input[name="first_name"]').css("border",'2px solid red');
-                return false
-            }
-        }
-        if (second_name){
-            if (!second_name.match(RegName)){
-                alert('Введите коректно Поле: Second Name');
-                $(form + ' input[name="second_name"]').css("border",'2px solid red');
-                return false
-            }
-        }
-
-        if (email){
-            if (!email.match(RegEmail)){
-                alert('Введите коректно Поле: Email');
-                $(form + ' input[name="email"]').css("border",'2px solid red');
-                return false
-            }
-        }
+    let form = '#form-add';
+    let first_name = $(form + ' input[name="first_name"]').val();
+    let second_name = $(form + ' input[name="second_name"]').val();
+    let email = $(form + ' input[name="email"]').val();
     $.ajax({
         type: "POST",
         data: {first_name: first_name, second_name: second_name, email: email},
@@ -72,33 +44,48 @@ addUser.onclick = function (event) {
 
         },
         success: function (e) {
-            let tableEmpty = $('#main-table td').hasClass( "empty" );
+            let tableEmpty = $('#main-table td').hasClass("empty");
 
-            if(tableEmpty){
+
+            if (tableEmpty) {
                 $('#main-table td').remove();
             }
 
             let answer = JSON.parse(e);
-            $("#addUserModal").modal('hide');
-            console.log(answer[0].id);
-            if(answer.success !== false){
-                $('#main-table tbody').append('<tr data-id="' + answer[0].id + '"> <th scope="row">' + answer[0].id + '</th> <td data-info="first_name" data-id="' + answer[0].id + '">' + first_name + '</td> <td data-info="second_name" data-id="' + e + '">' + second_name + '</td>'
-                    + '<td data-info="email" data-id="' + answer[0].id + '">' + email + '</td>' +
+
+            if(answer.fail){
+                $(".db-request").html(answer.fail);
+            }
+
+            if(answer.error){
+                for (key in answer.error) {
+                    $('.'+key+'_error').html(answer.error[key]);
+                }
+            }
+            console.log(answer);
+
+            if (!answer.fail && !answer.error ) {
+                $("#form-add").trigger('reset');
+                $('#main-table tbody').append('<tr data-id="' + answer.id + '"> <th scope="row">' + answer.id + '</th> <td data-info="first_name" data-id="' + answer.id + '">' + first_name + '</td> <td data-info="second_name" data-id="' + answer.id + '">' + second_name + '</td>'
+                    + '<td data-info="email" data-id="' + answer.id + '">' + email + '</td>' +
                     '<td class="btn-box">' +
                     '<div class="btn-group" role="group" aria-label="Basic example">' +
-                    ' <button type="button" class="btn btn-danger deleteUser" onclick="buttonDeleteUser(this)">Delete</button>' +
+                    ' <button type="button" class="btn btn-danger deleteUser" onclick="buttonDeleteUser(this)" data-id="' + answer.id + '">Delete</button>' +
                     '</div>' +
                     '</td>' +
                     '</tr>');
             }
+            if(answer.success){
+                $(".db-request").html("Добавление прошло успешно");
+            }
         },
-        error: function(xhr, ajaxOptions, thrownError) {
-        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
         }
     });
 };
 
-// $(".deleteUser").on('click', deleteUser(event));
+
 function buttonDeleteUser(target) {
     let tableBody = $('#main-table tbody');
     let id = target.dataset.id;
@@ -117,12 +104,12 @@ function buttonDeleteUser(target) {
 
             },
             success: function (e) {
-
+                console.log(e);
                 $("tr[data-id=" + id + "]").remove();
 
                 let tabletd = $('#main-table td').length;
 
-                if(tabletd === 0){
+                if (tabletd === 0) {
                     $('#main-table tbody').html('<td class="empty" colspan="5">Пока нету пользователей</td>')
                 }
             }
@@ -157,31 +144,29 @@ function makeTdEditable(td) {
 }
 
 function finishTdEdit(td, isOk) {
-   let value  =  td.firstChild.value;
-   let element  =  document.getElementsByClassName('edit-area');
-   let attrName = element[0].getAttribute("name");
-   let RegEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
-   let RegName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-    // console.log(element[0].getAttribute("name"));
-
+    let value = td.firstChild.value;
+    let element = document.getElementsByClassName('edit-area');
+    let attrName = element[0].getAttribute("name");
+    let RegEmail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
+    let RegName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
     if (isOk) {
 
-        if (value === ''){
+        if (value === '') {
             element[0].style.border = '2px solid red';
             alert('Заполните Поле: ' + td.dataset.info);
             return false;
         }
 
-        if (attrName === 'first_name' || attrName === 'second_name'  ){
-            if (!value.match(RegName)){
+        if (attrName === 'first_name' || attrName === 'second_name') {
+            if (!value.match(RegName)) {
                 alert('Введите коректно Поле: ' + td.dataset.info);
                 element[0].style.border = '2px solid red';
                 return false
             }
         }
 
-        if (attrName === 'email'){
-            if (!value.match(RegEmail)){
+        if (attrName === 'email') {
+            if (!value.match(RegEmail)) {
                 alert('Введите коректно Поле: ' + td.dataset.info);
                 element[0].style.border = '2px solid red';
                 return false

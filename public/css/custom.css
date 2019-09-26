@@ -1,3 +1,13 @@
 .button-modal {
     text-align: end;
 }
+span.email_error,.second_name_error,.first_name_error {
+    display: block;
+    padding: 10px 0px 10px 10px;
+    color: red;
+}
+span.db-request {
+    color: green;
+    text-align: center;
+    display: block;
+}
